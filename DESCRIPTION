@@ -1,4 +1,4 @@
-Package: LMest
+Package: LMestCV
 Type: Package
 Title: Latent Markov Models with and without Covariates
 Version: 2.4.5

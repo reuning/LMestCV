@@ -1,4 +1,4 @@
-draw_lm_basic <-
+draw_lm_basic_eff <-
 function(piv,Pi,Psi,n){
 
 #        [lk,piv,Pi,Psi,np,aic,bic,lkv] = draw_lm_basic(piv,Pi,Psi,n)
@@ -36,9 +36,11 @@ function(piv,Pi,Psi,n){
 	  }
 	}
 	cat("------------|\n")
-	out = aggr_data(Y)
-	S = out$data_dis
-	yv = out$freq
+	out = as.data.table(Y)
+	out = out[,.N, by=names(out)]
+	
+	S = as.matrix(out)[,-ncol(out)]
+	yv = out$N
 	S = array(t(S), c(r, TT, length(yv)))
 	S = aperm(S)
 	if (r == 1) 

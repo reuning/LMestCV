@@ -12,8 +12,11 @@ complk <- function(S,R,yv,piv,Pi,Psi,k){
   	miss = !is.null(R)
 # Compute log-likelihood
 	Phi = array(1,c(ns,k,TT)); L = array(0,c(ns,k,TT))
-	if(miss) for(j in 1:r) Phi[,,1] = Phi[,,1]*(Psi[S[,1,j]+1,,j]*R[,1,j]+(1-R[,1,j]))
-	else for(j in 1:r) Phi[,,1] = Phi[,,1]*Psi[S[,1,j]+1,,j]
+	if(miss){
+	  for(j in 1:r) Phi[,,1] = Phi[,,1]*(Psi[S[,1,j]+1,,j]*R[,1,j]+(1-R[,1,j]))
+	} else {
+	  for(j in 1:r) Phi[,,1] = Phi[,,1]*Psi[S[,1,j]+1,,j]
+	}
   	L[,,1] = Phi[,,1]%*%diag(piv)
   	for(t in 2:TT){
   		if(miss) for(j in 1:r) Phi[,,t] = Phi[,,t]*(Psi[S[,t,j]+1,,j]*R[,t,j]+(1-R[,t,j]))
