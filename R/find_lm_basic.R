@@ -1,3 +1,5 @@
+#' Iterates over potential start values for lm_basic
+#'@export
 find_lm_basic <- function(S,yv,k,mod=0,nrep=2, tol1 = 10^-5, tol2 = 10^-10, 
                           maxit=1000,out_se=FALSE,piv=NULL,Pi=NULL,Psi=NULL){
   
@@ -19,7 +21,8 @@ find_lm_basic <- function(S,yv,k,mod=0,nrep=2, tol1 = 10^-5, tol2 = 10^-10,
     if(nrep==0){
       cat("***************************************************************************\n")
       cat(c(k,1),"\n")
-      outh = est_lm_basic(S,yv,k=k,start=1,tol=tol1, mod=mod)
+      outh = est_lm_basic(S,yv,k=k,start=1,tol=tol1, mod=mod, 
+                          out_se=F,piv=piv,Pi=Pi,Psi=Psi)
       
       lktrace = c(lktrace,outh$lk)
       if(outh$lk>out$lk) out = outh	
@@ -36,7 +39,8 @@ find_lm_basic <- function(S,yv,k,mod=0,nrep=2, tol1 = 10^-5, tol2 = 10^-10,
       for(h in 1:(nrep*(k-1))){
         cat("***************************************************************************\n")
         cat(c(k,h),"\n")
-        outh = est_lm_basic(S,yv,k=k,start=1,tol=tol1, mod=mod)
+        outh = est_lm_basic(S,yv,k=k,start=1,tol=tol1, mod=mod, 
+                            out_se=F,piv=piv,Pi=Pi,Psi=Psi)
 
         lktrace = c(lktrace,outh$lk)
         if(outh$lk>out$lk) out = outh	
