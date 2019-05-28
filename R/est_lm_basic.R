@@ -93,7 +93,8 @@ function(S,yv,k,start=0,mod=0,tol=10^-8,maxit=1000,out_se=FALSE,piv=NULL,Pi=NULL
 	    		ind = which(S[,t,j]==y)
     			P[y+1,j] = P[y+1,j]+sum(yv[ind])
 				E[1:bv[j],j] = m[[j]]$Co%*%log(m[[j]]$Ma%*%P[1:(bv[j]+1),j])
-		}
+        }
+   		P[P==0] = min(P[P!=0]) ## Deals with instances where there are no responses in a category
   	   	Psi = array(NA,c(b+1,k,r)); Eta = array(NA,c(b,k,r))
         	grid = seq(-k,k,2*k/(k-1))
         	for(c in 1:k) for(j in 1:r){

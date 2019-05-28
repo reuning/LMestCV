@@ -28,8 +28,7 @@ item_heldout <- function(S, yv, k, mod=1, out_se=F, full=F){
     if(full){
       mod_tmp <- est_lm_cont(S=S, yv=yv, k=k, mod=mod, out_se=F, Pi=mod_full$Pi, 
                              piv = mod_full$piv)
-      mod_tmp <- mod_tmp$out.single
-      
+
     } else {
       mod_tmp <- est_lm_cont(S=S, yv=yv, k=k, mod=mod, out_se=F, Pi=mod_full$Pi, 
                              piv = mod_full$piv)
