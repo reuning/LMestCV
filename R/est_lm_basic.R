@@ -1,3 +1,5 @@
+#' Fixed est_lm_basic 
+#'@export
 est_lm_basic <-
 function(S,yv,k,start=0,mod=0,tol=10^-8,maxit=1000,out_se=FALSE,piv=NULL,Pi=NULL,Psi=NULL){
 
@@ -89,19 +91,32 @@ function(S,yv,k,start=0,mod=0,tol=10^-8,maxit=1000,out_se=FALSE,piv=NULL,Pi=NULL
 	if(start == 0){
    		P = matrix(NA,b+1,r); E = matrix(NA,b,r)
    		for(j in 1:r) P[1:(bv[j]+1),j] = 0
-        for(t in 1:TT) for(j in 1:r) for(y in 0:b){
-	    		ind = which(S[,t,j]==y)
-    			P[y+1,j] = P[y+1,j]+sum(yv[ind])
-				E[1:bv[j],j] = m[[j]]$Co%*%log(m[[j]]$Ma%*%P[1:(bv[j]+1),j])
+        for(t in 1:TT) {
+          for(j in 1:r) {
+            for(y in 0:b){
+    	    		ind = which(S[,t,j]==y)
+        			P[y+1,j] = P[y+1,j]+sum(yv[ind])
+            }
+            tmp <- P[1:(bv[j]+1),j]
+            tmp[tmp==0] <- min(tmp[tmp!=0])
+            P[1:(bv[j]+1),j] <- tmp
+            ## Deals with instances where there are no responses in a category
+            
+            E[1:bv[j],j] = m[[j]]$Co%*%log(m[[j]]$Ma%*%P[1:(bv[j]+1),j])
+            
+          }
         }
-   		P[P==0] = min(P[P!=0]) ## Deals with instances where there are no responses in a category
-  	   	Psi = array(NA,c(b+1,k,r)); Eta = array(NA,c(b,k,r))
+   		# P[P==0] = min(P[P!=0]) ## Deals with instances where there are no responses in a category
+  	   	Psi = array(NA,c(b+1,k,r)); 
+  	   	Eta = array(NA,c(b,k,r))
         	grid = seq(-k,k,2*k/(k-1))
-        	for(c in 1:k) for(j in 1:r){
-			etac = E[1:bv[j],j]+grid[c]
-			Eta[1:bv[j],c,j] = etac
-			Psi[1:(bv[j]+1),c,j] = invglob(etac)
-       	}
+        	for(c in 1:k) {
+        	  for(j in 1:r){
+        			etac = E[1:bv[j],j]+grid[c]
+        			Eta[1:bv[j],c,j] = etac
+        			Psi[1:(bv[j]+1),c,j] = invglob(etac)
+        	  }
+        	}
   		piv = rep(1,k)/k
 		Pi = matrix(1,k,k)+9*diag(k); Pi = diag(1/rowSums(Pi))%*%Pi;
 		Pi = array(Pi,c(k,k,TT)); Pi[,,1] = 0
