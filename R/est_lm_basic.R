@@ -91,22 +91,20 @@ function(S,yv,k,start=0,mod=0,tol=10^-8,maxit=1000,out_se=FALSE,piv=NULL,Pi=NULL
 	if(start == 0){
    		P = matrix(NA,b+1,r); E = matrix(NA,b,r)
    		for(j in 1:r) P[1:(bv[j]+1),j] = 0
-        for(t in 1:TT) {
-          for(j in 1:r) {
-            for(y in 0:b){
-    	    		ind = which(S[,t,j]==y)
-        			P[y+1,j] = P[y+1,j]+sum(yv[ind])
-            }
-            tmp <- P[1:(bv[j]+1),j]
-            tmp[tmp==0] <- min(tmp[tmp!=0])
-            P[1:(bv[j]+1),j] <- tmp
-            ## Deals with instances where there are no responses in a category
-            
-            E[1:bv[j],j] = m[[j]]$Co%*%log(m[[j]]$Ma%*%P[1:(bv[j]+1),j])
-            
-          }
-        }
-   		# P[P==0] = min(P[P!=0]) ## Deals with instances where there are no responses in a category
+   		for (t in 1:TT)
+   		  for (j in 1:r)
+   		    for (y in 0:b) {
+   		      ind = which(S[, t, j] == y)
+   		      P[y + 1, j] = P[y + 1, j] + sum(yv[ind])
+   		    }
+   		if (miss){
+   		  P[1,] = P[1,] - colSums(Rv==0) ####### Drops out all the NAs that were added as 0s  
+   		}
+   		P[P==0] <- min(P[P!=0]) 
+   		for (j in 1:r){
+   		  E[1:bv[j], j] = m[[j]]$Co %*% log(m[[j]]$Ma %*% P[1:(bv[j] + 1), j])
+   		}
+   		
   	   	Psi = array(NA,c(b+1,k,r)); 
   	   	Eta = array(NA,c(b,k,r))
         	grid = seq(-k,k,2*k/(k-1))

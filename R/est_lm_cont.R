@@ -121,6 +121,7 @@ est_lm_cont <-
       if (miss){
         P[1,] = P[1,] - colSums(Rv==0) ####### Drops out all the NAs that were added as 0s  
       }
+      P[P==0] <- min(P[P!=0]) 
       for (j in 1:r){
         E[1:bv[j], j] = m[[j]]$Co %*% log(m[[j]]$Ma %*% P[1:(bv[j] + 1), j])
       }
