@@ -1,6 +1,7 @@
 #' checks heldout
 #'@export
-item_heldout <- function(S, yv, k, mod=1, out_se=F, full=F){
+item_heldout <- function(S, yv, k, mod=1, out_se=F, full=F, 
+                         start=0){
   
   S_full <- S
   items <- dim(S_full)[3]
@@ -26,8 +27,10 @@ item_heldout <- function(S, yv, k, mod=1, out_se=F, full=F){
     
     S <- S_full[,,jj]
     if(full){
-      mod_tmp <- est_lm_cont(S=S, yv=yv, k=k, mod=mod, out_se=F, Pi=mod_full$Pi, 
+      mod_tmp <- find_lm_cont(S=S, yv=yv, k=k, mod=mod, out_se=F, Pi=mod_full$Pi, 
                              piv = mod_full$piv)
+      mod_tmp <- mod_tmp$out.single
+      print('hi')
 
     } else {
       mod_tmp <- est_lm_cont(S=S, yv=yv, k=k, mod=mod, out_se=F, Pi=mod_full$Pi, 
